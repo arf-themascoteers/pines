@@ -17,15 +17,15 @@ class PatchDataset(Dataset):
         self.LENGTH = 145
         self.N_BANDS = 220
         self.N_PATCHES = int(145**2 / 5**2)
-        cube = io.loadmat('data/Indian_pines.mat')["indian_pines"].astype(float)
-        gt = io.loadmat('data/Indian_pines_gt.mat')["indian_pines_gt"].astype(float)
+        self.cube = io.loadmat('data/Indian_pines.mat')["indian_pines"].astype(float)
+        self.gt = io.loadmat('data/Indian_pines_gt.mat')["indian_pines_gt"].astype(float)
 
-        mean = np.mean(cube)
-        std = np.std(cube)
-        cube = (cube-mean)/std
+        mean = np.mean(self.cube)
+        std = np.std(self.cube)
+        self.cube = (self.cube-mean)/std
 
-        patches = self.__create_patches__(cube)
-        labels = self.__create_labels__(patches, gt)
+        patches = self.__create_patches__(self.cube)
+        labels = self.__create_labels__(patches, self.gt)
         x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(patches, labels, test_size=0.2, random_state=11)
         self.x = x_train
         self.y = y_train
