@@ -24,9 +24,9 @@ class PatchDataset(Dataset):
         std = np.std(self.cube)
         self.cube = (self.cube-mean)/std
 
-        patches = self.__create_patches__(self.cube)
-        labels = self.__create_labels__(patches, self.gt)
-        x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(patches, labels, test_size=0.2, random_state=11)
+        self.patches = self.__create_patches__(self.cube)
+        labels = self.__create_labels__(self.patches, self.gt)
+        x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(self.patches, labels, test_size=0.2, random_state=11)
         self.x = x_train
         self.y = y_train
         if not self.is_train:
@@ -46,9 +46,9 @@ class PatchDataset(Dataset):
 
     def __create_labels__(self, patches, gt):
         y = torch.zeros(len(patches), dtype=torch.int64)
-        gt_patches = self.__create_gt_patches__(gt)
+        self.gt_patches = self.__create_gt_patches__(gt)
         for index, patch in enumerate(patches):
-            label = self.__get_dominant_label__(gt_patches[index])
+            label = self.__get_dominant_label__(self.gt_patches[index])
             y[index] = label
         return y
 
